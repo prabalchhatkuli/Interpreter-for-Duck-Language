@@ -23,6 +23,23 @@ bool Statement::colonPresence(string findcolon)
 	return false;
 }
 
+bool Statement::quotesBeforeColon(string findcolon)
+{
+	bool colonBeforeQuotes = false;
+	for (int i = 0; i < findcolon.length(); i++)
+	{
+		if (findcolon[i] == '"')
+		{
+			colonBeforeQuotes = true;
+		}
+		if (findcolon[i]==':'&& colonBeforeQuotes==false)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void Statement::RecordStatements(string a_sourceFileName)//passing to the function the source file
 {
 	ifstream inf(a_sourceFileName);
@@ -43,10 +60,9 @@ void Statement::RecordStatements(string a_sourceFileName)//passing to the functi
 	int counter = 0;
 	for (vector<string>::iterator it = m_statements.begin(); it != m_statements.end(); ++it)
 	{
-		if (colonPresence(*it))
+		if (colonPresence(*it) && quotesBeforeColon(*it))
 		{
 			int i = 0;
-			bool isColonFirst = false;
 			for (i = 0; i < (*it).length(); i++)
 			{
 				if ((*it)[i] == ':')
@@ -62,8 +78,15 @@ void Statement::RecordStatements(string a_sourceFileName)//passing to the functi
 		}
 		counter++;
 	}
+	/*  //checking by printing
 	for (vector<string>::iterator it = m_statements.begin(); it != m_statements.end(); ++it)
 	{
 		cout << (*it) << endl;
 	}
+	cout << "-------------------------------------------------------------------------------------------------------------" << endl;
+	for (map<string, int>::iterator it = m_labelToStatement.begin(); it != m_labelToStatement.end(); ++it)
+	{
+		cout << (*it).first << "\t" <<(*it).second<<endl;
+	}
+	*/
 }

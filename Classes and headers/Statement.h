@@ -11,6 +11,7 @@ public:
 	}
 	int GetLabelLocation(string a_string) { return 1; }//name with a colon after is called a label
 	bool colonPresence(string findcolon);
+	bool quotesBeforeColon(string findcolon);
 
 private:
 	vector<string> m_statements;//stores each line of the text each statements
