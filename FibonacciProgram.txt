@@ -1,0 +1,26 @@
+ 
+
+read "How many factorials: ", n;
+
+k = 1;  // The first factorial we wish to compute.
+
+factC: fact = 1;  // Will hold the value of the factorial when we are done.
+
+i =1;
+
+loop:    fact = fact * i;
+
+if( i >= k ) goto next;
+
+i = i + 1;
+goto loop;
+
+next:  print "fact of: ", i " = ", fact;
+          k = k + 1;
+          if( k > n ) goto done;
+          goto  FactC;
+
+done: print "We are finished";
+
+stop;
+end;

@@ -18,6 +18,20 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Classes and headers\DuckInterp.cpp" />
+    <ClCompile Include="..\Classes and headers\DuckInterpreter.cpp" />
+    <ClCompile Include="..\Classes and headers\Statement.cpp" />
+    <ClCompile Include="..\Classes and headers\stdafx.cpp" />
+    <ClCompile Include="..\Classes and headers\SymbolTable.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Classes and headers\DuckInterpreter.h" />
+    <ClInclude Include="..\Classes and headers\Statement.h" />
+    <ClInclude Include="..\Classes and headers\stdafx.h" />
+    <ClInclude Include="..\Classes and headers\SymbolTable.h" />
+    <ClInclude Include="..\Classes and headers\targetver.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{F47A7C0B-5210-4D8A-B169-916012D29904}</ProjectGuid>
@@ -150,20 +164,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\Desktop\duckInterp\DuckInterpreter.h" />
-    <ClInclude Include="..\..\..\..\Desktop\duckInterp\Statement.h" />
-    <ClInclude Include="..\..\..\..\Desktop\duckInterp\stdafx.h" />
-    <ClInclude Include="..\..\..\..\Desktop\duckInterp\SymbolTable.h" />
-    <ClInclude Include="..\..\..\..\Desktop\duckInterp\targetver.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\Desktop\duckInterp\DuckInterp.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\duckInterp\DuckInterpreter.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\duckInterp\Statement.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\duckInterp\stdafx.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\duckInterp\SymbolTable.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
