@@ -45,7 +45,7 @@ private:
 		string typeKey = "";
 		bool foundType = false;
 		// evaluating the first word of the statement
-		for (int i = 0; i < a_string.length(); i++)
+		for (unsigned int i = 0; i < a_string.length(); i++)
 		{
 			if (false == foundType && a_string[i]!=' ')
 			{
@@ -110,7 +110,63 @@ private:
 	int ExecuteStatement(string a_statement, int a_StatementLoc);
 
 	// Returns the next element in the statement.  Returns the next location to be accessed.
-	int ParseNextElement(const string &a_statement, int a_nextPos, string &a_stringValue, double &numValue) { return 1;}
+	int ParseNextElement(const string &a_statement, int a_nextPos, string &a_stringValue, double &numValue)
+	{
+		string tempString="";
+		bool ignoredSpace = false;
+		for (unsigned int i = a_nextPos; i < a_statement.length(); i++)
+		{
+			if (false == ignoredSpace && a_statement[i] != ' ')
+			{
+				ignoredSpace = true;
+			}
+			if (true == ignoredSpace && (isalpha(a_statement[i]) || isdigit(a_statement[i]) || a_statement[i] == '.'))
+			{
+				cout << a_statement[i] << endl;
+				tempString += a_statement[i];
+			}
+			if (true == ignoredSpace && (a_statement[i] == '='))
+			{
+				if (tempString.length() == 0)
+				{
+					tempString += a_statement[i];
+					a_nextPos = i + 1;
+				}
+				else
+				{
+					a_nextPos = i;
+				}
+				break;
+			}
+			if (true == ignoredSpace && !(isalpha(a_statement[i]) || isdigit(a_statement[i])) && a_statement[i] != '=')
+			{
+				a_nextPos = i;
+				break;
+			}
+		}
+		//checking if the value stores in the tempString is double or string
+		bool isNum = true;
+		cout << tempString << endl;
+		for (unsigned int i = 0; i < tempString.length(); i++)
+		{
+			if (!isdigit(tempString[i]))
+			{
+				isNum = false;
+				break;
+			}
+		}
+		if (true == isNum)
+		{
+			stringstream ss;
+			ss << tempString;
+			ss >> numValue;
+		}
+		else
+		{
+			a_stringValue = tempString;
+		}
+			return a_nextPos;
+	}
 
 	// Returns the precedence of an operator.
 	int FindPrecedence(string op) { return 1; }
