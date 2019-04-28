@@ -68,7 +68,6 @@ private:
 				break;
 			}
 		}
-
 		// returning statement type
 		if (typeKey=="read")
 		{
@@ -122,7 +121,6 @@ private:
 			}
 			if (true == ignoredSpace && (isalpha(a_statement[i]) || isdigit(a_statement[i]) || a_statement[i] == '.'))
 			{
-				cout << a_statement[i] << endl;
 				tempString += a_statement[i];
 			}
 			if (true == ignoredSpace && (a_statement[i] == '='))
@@ -138,7 +136,7 @@ private:
 				}
 				break;
 			}
-			if (true == ignoredSpace && !(isalpha(a_statement[i]) || isdigit(a_statement[i])) && a_statement[i] != '=')
+			if (true == ignoredSpace && !(isalpha(a_statement[i]) || isdigit(a_statement[i])) && a_statement[i] != '='&&a_statement[i] != '.')
 			{
 				a_nextPos = i;
 				break;
@@ -146,13 +144,19 @@ private:
 		}
 		//checking if the value stores in the tempString is double or string
 		bool isNum = true;
-		cout << tempString << endl;
 		for (unsigned int i = 0; i < tempString.length(); i++)
 		{
 			if (!isdigit(tempString[i]))
 			{
-				isNum = false;
-				break;
+				if (tempString[i] == '.')
+				{
+					continue;
+				}
+				else
+				{
+					isNum = false;
+					break;
+				}
 			}
 		}
 		if (true == isNum)
@@ -165,7 +169,7 @@ private:
 		{
 			a_stringValue = tempString;
 		}
-			return a_nextPos;
+		return a_nextPos;
 	}
 
 	// Returns the precedence of an operator.
@@ -175,7 +179,44 @@ private:
 	void EvaluateArithmentStatment( const string &a_statement );
 
 	// Evaluate an arithmetic expression.  Return the value.  The variable a_nextPos is index to the next  
-	double EvaluateArithmenticExpression(const string &a_statement, int a_nextPos) { return 1; }
+	double EvaluateArithmenticExpression(const string &a_statement, int a_nextPos) 
+	{
+		double finalValue=0;
+		while (a_statement[a_nextPos] != ';')
+		{
+			string valueOrOperator;
+			double numericalOperand;
+			ParseNextElement(a_statement, a_nextPos, valueOrOperator, numericalOperand);
+			//if single letter operator push to operator stack
+			if (!valueOrOperator.empty() && valueOrOperator.length() == 1)
+			{
+				m_operatorStack.push_back(valueOrOperator[0]);
+			}
+			//else push to the operand stack
+			else
+			{
+				double returnValue;
+				if (!valueOrOperator.empty())
+				{
+					bool isExits = m_symbolTable.GetVariableValue(valueOrOperator, returnValue);
+					if (isExits)
+					{
+						m_numberStack.push_back(returnValue);
+					}
+					else
+					{
+						cerr << "BUGBUG - program terminate: provided variable does not exist " << a_statement << endl;
+						exit(1);
+					}
+				}
+				else
+				{
+					m_numberStack.push_back(numericalOperand);
+				}
+			}
+		}
+		return finalValue; 
+	}
 
 	int EvaluateIfStatement(string a_statement, int a_nextStatement);
 

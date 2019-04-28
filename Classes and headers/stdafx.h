@@ -20,7 +20,7 @@
 #include <fstream>
 #include<iterator>
 #include <assert.h>
-#include<sstream>
+#include <sstream>
 
 
 using namespace std;

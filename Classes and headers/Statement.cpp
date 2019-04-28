@@ -53,7 +53,16 @@ void Statement::RecordStatements(string a_sourceFileName)//passing to the functi
 	while (!inf.eof())
 	{
 		getline(inf, copyString);
-		m_statements.push_back(copyString);
+		string statement;
+		for (int i = copyString.length() - 1; i < copyString.length(); i--)
+		{
+			if (copyString[i] == ';')
+			{
+				statement = copyString.substr(0, i + 1);
+				m_statements.push_back(statement);
+				break;
+			}
+		}
 	}
 
 	// delete any label and record the remainder of the statement.
@@ -78,6 +87,25 @@ void Statement::RecordStatements(string a_sourceFileName)//passing to the functi
 		}
 		counter++;
 	}
+	/*
+	for (vector<string>::iterator it = m_statements.begin(); it != m_statements.end(); ++it)
+	{
+		string processString = (*it);
+		bool foundSemicolon = false;
+		for (int i = processString.length()-1; i < processString.length(); i--)
+		{
+			if (processString[i] == ';')
+			{
+				foundSemicolon = true;
+				(*it) = processString.substr(0, i + 1);
+				break;
+			}
+		}
+		if (foundSemicolon == false)
+		{
+			m_statements.erase(it);
+		}
+	}*/
 	//checking by printing
 	for (vector<string>::iterator it = m_statements.begin(); it != m_statements.end(); ++it)
 	{
