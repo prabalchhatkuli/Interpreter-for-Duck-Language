@@ -38,8 +38,67 @@ private:
 		EndStat,
 		gotoStat,
 	};
+
 	// Determines the type of the next statement.
-	StatementType GetStatementStype(const string &a_string) { return StatementType::gotoStat; }
+	StatementType GetStatementStype(const string &a_string)
+	{
+		string typeKey = "";
+		bool foundType = false;
+		// evaluating the first word of the statement
+		for (int i = 0; i < a_string.length(); i++)
+		{
+			if (false == foundType && a_string[i]!=' ')
+			{
+				foundType = true;
+			}
+			//for things like end, stop, if, read, print, read
+			if (true == foundType && a_string[i] != ' ')
+			{
+				if (isalpha(a_string[i]) || isdigit(a_string[i]))
+				{
+					typeKey+=a_string[i];
+				}
+				else
+				{
+					break;
+				}
+			}
+			if (true == foundType && a_string[i] == ' ')
+			{
+				break;
+			}
+		}
+
+		// returning statement type
+		if (typeKey=="read")
+		{
+			return StatementType::ReadStat;
+		}
+		else if (typeKey=="if")
+		{
+			return StatementType::IfStat;
+		}
+		else if(typeKey=="goto")
+		{
+			return StatementType::gotoStat;
+		}
+		else if (typeKey=="print")
+		{
+			return StatementType::PrintStat;
+		}
+		else if (typeKey=="stop")
+		{
+			return StatementType::StopStat;
+		}
+		else if (typeKey=="end")
+		{
+			return StatementType::EndStat;
+		}
+		else
+		{
+			return StatementType::ArithmeticStat;
+		}
+	}
 
 	enum class ElementType
 	{

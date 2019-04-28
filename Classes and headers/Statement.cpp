@@ -21,7 +21,7 @@ bool Statement::colonPresence(string findcolon)
 		}
 	}
 	return false;
-}
+}/*bool Statement::colonPresence(string findcolon)*/
 
 bool Statement::quotesBeforeColon(string findcolon)
 {
@@ -38,7 +38,7 @@ bool Statement::quotesBeforeColon(string findcolon)
 		}
 	}
 	return false;
-}
+}/*bool Statement::quotesBeforeColon(string findcolon)*/
 
 void Statement::RecordStatements(string a_sourceFileName)//passing to the function the source file
 {
@@ -78,7 +78,7 @@ void Statement::RecordStatements(string a_sourceFileName)//passing to the functi
 		}
 		counter++;
 	}
-	/*  //checking by printing
+	//checking by printing
 	for (vector<string>::iterator it = m_statements.begin(); it != m_statements.end(); ++it)
 	{
 		cout << (*it) << endl;
@@ -88,5 +88,5 @@ void Statement::RecordStatements(string a_sourceFileName)//passing to the functi
 	{
 		cout << (*it).first << "\t" <<(*it).second<<endl;
 	}
-	*/
-}
+	
+}/*void Statement::RecordStatements(string a_sourceFileName)*/

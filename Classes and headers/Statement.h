@@ -6,8 +6,9 @@ public:
 	~Statement();
 
 	void RecordStatements(string a_sourceFileName);
-	string GetStatement(int a_statementNum) {
-		return "";
+	string GetStatement(int a_statementNum)
+	{
+		return m_statements[a_statementNum];
 	}
 	int GetLabelLocation(string a_string) { return 1; }//name with a colon after is called a label
 	bool colonPresence(string findcolon);

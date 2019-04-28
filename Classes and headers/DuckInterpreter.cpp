@@ -10,6 +10,7 @@ DuckInterpreter::DuckInterpreter()
 DuckInterpreter::~DuckInterpreter()
 {
 }
+
 void DuckInterpreter::RunInterpreter()
 {
 	int nextStatement = 0;
