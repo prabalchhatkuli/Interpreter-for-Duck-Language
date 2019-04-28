@@ -48,7 +48,7 @@ int DuckInterpreter::ExecuteStatement(string a_statement, int a_nextStatement)
 	case StatementType::PrintStat:
 	case StatementType::ReadStat:
 		//EvaluateReadStatement(a_statement);
-		return a_nextStatement + 1;
+		//return a_nextStatement + 1;
 
 	case StatementType::gotoStat:
 
