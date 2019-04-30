@@ -44,7 +44,7 @@ int DuckInterpreter::ExecuteStatement(string a_statement, int a_nextStatement)
 
 		return EvaluateIfStatement(a_statement, a_nextStatement);
 	case StatementType::StopStat:
-	case StatementType::EndStat:
+	case StatementType::EndStat: exit(0);
 	case StatementType::PrintStat:
 	case StatementType::ReadStat:
 		//EvaluateReadStatement(a_statement);
@@ -66,13 +66,18 @@ void DuckInterpreter::EvaluateArithmentStatment(const string &a_statement)
 	string resultVariable;
 	double placeHolder;
 	nextPos = ParseNextElement(a_statement, nextPos, resultVariable, placeHolder);
+	cout << "here the value of resultVariable is"<<resultVariable << endl;
 	assert(!resultVariable.empty());
 
 	string assigmentOp;
 	nextPos = ParseNextElement(a_statement, nextPos, assigmentOp, placeHolder);
-	assert(assigmentOp != "=");
+	cout << "here the value of assignment operator is " << assigmentOp << endl;
+	assert(assigmentOp == "=");//correction made here
 
 	double result = EvaluateArithmenticExpression(a_statement, nextPos);
+	cout << "here the result of the arithemetic evaluation is::::::::::::::::::::::::::::::::::::::::::::::::::::"<<endl;
+	cout << result <<endl;
+	cout << ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << endl;
 
 	// Record the result.
 	m_symbolTable.RecordVariableValue(resultVariable, result);

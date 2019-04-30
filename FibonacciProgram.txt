@@ -1,5 +1,6 @@
  
-
+k = 2*3+5 /7-4;
+end;
 read "How many factorials: ", n;
 
 k = 1;  // The first factorial we wish to compute.
