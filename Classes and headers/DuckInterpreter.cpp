@@ -46,6 +46,7 @@ int DuckInterpreter::ExecuteStatement(string a_statement, int a_nextStatement)
 	case StatementType::StopStat:
 	case StatementType::EndStat: exit(0);
 	case StatementType::PrintStat:
+		return EvaluatePrintStatement(a_statement);
 	case StatementType::ReadStat:
 		//EvaluateReadStatement(a_statement);
 		//return a_nextStatement + 1;
@@ -96,6 +97,47 @@ int DuckInterpreter::EvaluateIfStatement(string a_statement, int a_nextStatement
 	// Searching from the end, fine the goto statement and replace it by ";"  Record
 	// the label in the goto.
 	string label;
+	int labelPosition = 0;
+	//-------------------------------------------------------------------------------------------
+	//found label has the integer position of goto in the string a_statement
+	unsigned int foundLabel = a_statement.find("goto");
+	if (foundLabel != string::npos)
+	{
+		cout << "goto found at:" << foundLabel << endl;
+		labelPosition = foundLabel + 4;
+		//find the label
+		for (unsigned int i = labelPosition; i < a_statement.length(); i++)
+		{
+			if (!isspace(a_statement[i]) && (isalnum(a_statement[i]) || a_statement[i] == '_'))
+			{
+				label += a_statement[i];
+			}
+			else if (isspace(a_statement[i]))
+			{
+				continue;
+			}
+			else
+			{
+				break;
+			}
+		}
+		if (label.length() == 0)
+		{
+			cerr << "bugbug : missing label in goto statement" << endl;
+			exit(1);
+		}
+		cout << "::::::::::::::::::::::::::::::::" << endl;
+		cout << label << "oo" << endl;
+		cout << ":::::::::::::::::::::::::::::::::" << endl;
+	}
+	else
+	{
+		cerr << "bugbug : goto statement not found in if clause" << endl;
+		exit(1);
+	}
+	//replace everything from(goto to end of string) with ;
+	a_statement.replace(a_statement.begin() + foundLabel, a_statement.end(), ";");
+	//----------------------------------------------------------------------------------
 	int labelLocation = m_statements.GetLabelLocation(label);
 
 	// Verify that the label from the goto exists.
@@ -109,5 +151,9 @@ int DuckInterpreter::EvaluateIfStatement(string a_statement, int a_nextStatement
 		return a_nextStatement + 1;
 	}
 	return labelLocation;
+}
+
+int DuckInterpreter::EvaluatePrintStatement(string a_statement)
+{
 
 }

@@ -123,7 +123,7 @@ private:
 			{
 				tempString += a_statement[i];
 			}
-			if (true == ignoredSpace && (a_statement[i] == '=') || (a_statement[i] == '+') || (a_statement[i] == '-') || (a_statement[i] == '*') || (a_statement[i] == '/') || (a_statement[i] == ';'))
+			if (true == ignoredSpace && (a_statement[i] == '=') || (a_statement[i] == '+') || (a_statement[i] == '-') || (a_statement[i] == '*') || (a_statement[i] == '/') || (a_statement[i] == ';')|| (a_statement[i] == '(')|| (a_statement[i] == ')'))
 			{
 				if (tempString.length() == 0)
 				{
@@ -183,13 +183,13 @@ private:
 		{
 			return 4;
 		}
-	/*	if (op[0] == '(' || op[0] == ')')
+		if (op[0] == '(' || op[0] == ')')
 		{
 			return 3;
-		}*/
+		}
 	/*	if (op[0] == '<' || op[0] == '>')
 		{
-			return 3;
+			return 2;
 		}*/
 		//need something for > and < operators
 		if (op[0]=='['||op[0]==';')
@@ -199,14 +199,18 @@ private:
 	}
 
 	//performs arithmetic expression
-	double findValue(double a, double b, char operation)
+	double findValue(double val1, double val2, char operate)
 	{
-		switch (operation)
+		switch (operate)
 		{
-			case '+': return a + b;
-			case '-': return a - b;
-			case '*': return a * b;
-			case '/': return a / b;
+			case '+': 
+				return val1 + val2;
+			case '-':
+				return val1 - val2;
+			case '*':
+				return val1 * val2;
+			case '/':
+				return val1 / val2;
 		}
 	}
 
@@ -218,46 +222,42 @@ private:
 	{
 		double finalValue=0;
 		m_operatorStack.push_back('[');
+		//read values until the semicolon is read
 		while (a_statement[a_nextPos] != ';')
 		{
 			string valueOrOperator;
 			double numericalOperand;
 			//parsed one thing from the statement at a time and inserted into respective stack: operator, number
-			//cout << "number: " << a_nextPos << endl;
 			a_nextPos = ParseNextElement(a_statement, a_nextPos, valueOrOperator, numericalOperand);
 			
 			//if single letter operator push to operator stack
 			if (!valueOrOperator.empty() && valueOrOperator.length() <= 2 && valueOrOperator.length() > 0 && !isalnum(valueOrOperator[0]))
 			{
 				if (valueOrOperator.length()==2 && isalnum(valueOrOperator[1]))
-				{
-
-				}
+				{}
 				else
 				{
-					cout << "operator wala value" << endl;
-					cout << "value:" << valueOrOperator << endl;
 					//if an opening parenthesis is found
 					if (valueOrOperator[0] == '(')
 					{
-						m_operatorStack.push_back('(');
+						m_operatorStack.push_back(valueOrOperator[0]);
 						continue;
 					}
-					//if a closing parenthesis is found
-					if (valueOrOperator[0] == ')')/*also need a condition to satisfy if '(' exists if not display error*/
+					//when a closing parenthesis is found
+					if (valueOrOperator[0] == ')')/*also need a condition to satisfy if '(' exists or not in the stack? if not display error*/
 					{
+						//Note:: to complete after debugging:::a function would be great to do this redundant operation 
 						while (m_operatorStack.size() > 1 && m_operatorStack.back() != '(')
 						{
-							double val2 = m_numberStack.back();
+							//the operands
+							double double_value2 = m_numberStack.back();
 							m_numberStack.pop_back();
-
-							double val1 = m_numberStack.back();
+							double double_value1 = m_numberStack.back();
 							m_numberStack.pop_back();
-
-							char op = m_operatorStack.back();
+							//the operator
+							char operate = m_operatorStack.back();
 							m_operatorStack.pop_back();
-
-							m_numberStack.push_back(findValue(val1, val2, op));
+							m_numberStack.push_back(findValue(double_value1, double_value2, operate));
 						}
 						m_operatorStack.pop_back();
 						continue;
@@ -267,16 +267,15 @@ private:
 					string previousPrecedence(1, m_operatorStack.back());
 					while (m_operatorStack.size() > 1 && FindPrecedence(valueOrOperator)/*new*/ <= /*from stack*/FindPrecedence(previousPrecedence))
 					{
-						double val2 = m_numberStack.back();
+						//the operands
+						double double_value2 = m_numberStack.back();
 						m_numberStack.pop_back();
-
-						double val1 = m_numberStack.back();
+						double double_value1 = m_numberStack.back();
 						m_numberStack.pop_back();
-
-						char op = m_operatorStack.back();
+						//the operator
+						char operate = m_operatorStack.back();
 						m_operatorStack.pop_back();
-
-						m_numberStack.push_back(findValue(val1, val2, op));
+						m_numberStack.push_back(findValue(double_value1, double_value2, operate));
 					}
 					m_operatorStack.push_back(valueOrOperator[0]);
 				}
@@ -288,8 +287,6 @@ private:
 				double returnValue;
 				if (!valueOrOperator.empty())
 				{
-					cout << "variable wala value" << endl;
-					cout << "value:" << valueOrOperator << endl;
 					bool isExits = m_symbolTable.GetVariableValue(valueOrOperator, returnValue);
 					if (isExits)
 					{
@@ -303,25 +300,22 @@ private:
 				}
 				else
 				{
-					cout << "in else" << endl;
-					cout << "number:" << numericalOperand << endl;
 					m_numberStack.push_back(numericalOperand);
 				}
 			}
 		}
-		//once semi-colon is found then calculate the remaining stuff in the stack
+		//once semi-colon is found then finish calculating any remaining stuff in the stacks
 		while (m_operatorStack.size() > 1)
 		{
-			double val2 = m_numberStack.back();
+			//the operands
+			double double_value2 = m_numberStack.back();
 			m_numberStack.pop_back();
-
-			double val1 = m_numberStack.back();
+			double double_value1 = m_numberStack.back();
 			m_numberStack.pop_back();
-
-			char op = m_operatorStack.back();
+			//the operator
+			char operate = m_operatorStack.back();
 			m_operatorStack.pop_back();
-
-			m_numberStack.push_back(findValue(val1, val2, op));
+			m_numberStack.push_back(findValue(double_value1, double_value2, operate));
 		}
 		//the return value is the last remaining thing in the number stack
 		return m_numberStack.back();
@@ -329,5 +323,6 @@ private:
 
 	int EvaluateIfStatement(string a_statement, int a_nextStatement);
 
+	int EvaluatePrintStatement(string a_statement);
 };
 

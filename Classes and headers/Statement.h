@@ -10,7 +10,21 @@ public:
 	{
 		return m_statements[a_statementNum];
 	}
-	int GetLabelLocation(string a_string) { return 1; }//name with a colon after is called a label
+
+	int GetLabelLocation(string a_string)
+	{
+		if (m_labelToStatement.find(a_string)==m_labelToStatement.end())
+		{
+			return m_labelToStatement.find(a_string)->second;
+		}
+		else
+		{
+			cerr << "BugBug : the label was not found in the map of the labels" << endl;
+			exit(0);
+		} 
+	}
+
+	//these are used to assist the recordStatement function
 	bool colonPresence(string findcolon);
 	bool quotesBeforeColon(string findcolon);
 

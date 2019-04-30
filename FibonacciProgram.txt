@@ -1,5 +1,5 @@
  
-k = 2*3+5 /7-4;
+k = 2*(3+5) /7 -2;
 end;
 read "How many factorials: ", n;
 
