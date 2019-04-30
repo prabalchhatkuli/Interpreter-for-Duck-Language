@@ -173,7 +173,38 @@ private:
 	}
 
 	// Returns the precedence of an operator.
-	int FindPrecedence(string op) { return 1; }
+	int FindPrecedence(string op) 
+	{
+		if (op[0] == '*' || op[0] == '/')
+		{
+			return 4;
+		}
+		if (op[0] == '-' || op[0] == '+')
+		{
+			return 3;
+		}
+		if (op[0] == '(' || op[0] == ')')
+		{
+			return 2;
+		}
+		//need something for > and < operators
+		if (op[0]=='['||op[0]==';')
+		{
+			return 1;
+		}
+	}
+
+	//performs arithmetic expression
+	double findValue(double a, double b, char operation)
+	{
+		switch (operation)
+		{
+			case '+': return a + b;
+			case '-': return a - b;
+			case '*': return a * b;
+			case '/': return a / b;
+		}
+	}
 
 	// Evaluate an arithmetic statement.
 	void EvaluateArithmentStatment( const string &a_statement );
@@ -182,17 +213,64 @@ private:
 	double EvaluateArithmenticExpression(const string &a_statement, int a_nextPos) 
 	{
 		double finalValue=0;
+		m_operatorStack.push_back['['];
 		while (a_statement[a_nextPos] != ';')
 		{
 			string valueOrOperator;
 			double numericalOperand;
+			//parsed one thing from the statement at a time and inserted into respective stack: operator, number
 			ParseNextElement(a_statement, a_nextPos, valueOrOperator, numericalOperand);
 			//if single letter operator push to operator stack
 			if (!valueOrOperator.empty() && valueOrOperator.length() == 1)
 			{
+
+				//if an opening parenthesis is found
+				if (valueOrOperator[0] == '(')
+				{
+					m_operatorStack.push_back('(');
+					a_nextPos++;
+					continue;
+				}
+				//if a closing parenthesis is found
+				if (valueOrOperator[0] == ')')/*also need a condition to satisfy if '(' exists if not display error*/
+				{
+					while (m_operatorStack.size() > 1 && m_operatorStack.back != '(')
+					{
+						double val2 = m_numberStack.back();
+						m_numberStack.pop_back();
+
+						double val1 = m_numberStack.back();
+						m_numberStack.pop_back();
+
+						char op = m_operatorStack.back();
+						m_operatorStack.pop_back();
+
+						m_numberStack.push_back(findValue(val1, val2, op));
+					}
+					m_operatorStack.pop_back();
+					a_nextPos++;
+					continue;
+				}
+				//if the size of the operator stack is more than one and the precedence of the current operator is less than 
+				//the previous operator or equal to it
+				string previousPrecedence(1, m_operatorStack.back());
+				while (m_operatorStack.size()>1 && FindPrecedence(valueOrOperator)/*new*/ <= /*from stack*/FindPrecedence(previousPrecedence))
+				{
+					double val2 = m_numberStack.back();
+					m_numberStack.pop_back();
+
+					double val1 = m_numberStack.back();
+					m_numberStack.pop_back();
+
+					char op = m_operatorStack.back();
+					m_operatorStack.pop_back();
+
+					m_numberStack.push_back(findValue(val1, val2, op));
+				}
 				m_operatorStack.push_back(valueOrOperator[0]);
 			}
-			//else push to the operand stack
+			//if not a single letter operator push to the operand stack, either the number, or by finding the number by looking into
+			//the symbol table
 			else
 			{
 				double returnValue;
@@ -205,7 +283,7 @@ private:
 					}
 					else
 					{
-						cerr << "BUGBUG - program terminate: provided variable does not exist " << a_statement << endl;
+						cerr << "BUGBUG - program terminate: undefined variable " << a_statement << endl;
 						exit(1);
 					}
 				}
@@ -214,8 +292,24 @@ private:
 					m_numberStack.push_back(numericalOperand);
 				}
 			}
+			a_nextPos++;
 		}
-		return finalValue; 
+		//once semi-colon is found then calculate the remaining stuff in the stack
+		while (m_operatorStack.size() > 1)
+		{
+			double val2 = m_numberStack.back();
+			m_numberStack.pop_back();
+
+			double val1 = m_numberStack.back();
+			m_numberStack.pop_back();
+
+			char op = m_operatorStack.back();
+			m_operatorStack.pop_back();
+
+			m_numberStack.push_back(findValue(val1, val2, op));
+		}
+		//the return value is the last remaining thing in the number stack
+		return m_numberStack.back(); 
 	}
 
 	int EvaluateIfStatement(string a_statement, int a_nextStatement);
