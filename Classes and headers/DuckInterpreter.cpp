@@ -38,18 +38,31 @@ int DuckInterpreter::ExecuteStatement(string a_statement, int a_nextStatement)
 	case StatementType::ArithmeticStat:
 
 		EvaluateArithmentStatment(a_statement);
+		/*checkin if value exists in symbol table
+		double value;
+		bool isexists;
+		isexists = m_symbolTable.GetVariableValue("m", value);
+		if (isexists)
+		{
+			cout << "value set in the symbol table for k is " << value << endl;
+		}
+		else
+		{
+			cout << "value does not exits in symbol table" << endl;
+		}
+		*/
 		return a_nextStatement + 1;
-
 	case StatementType::IfStat:
-
 		return EvaluateIfStatement(a_statement, a_nextStatement);
 	case StatementType::StopStat:
-	case StatementType::EndStat: exit(0);
+	case StatementType::EndStat: 
+		exit(0);
 	case StatementType::PrintStat:
-		return EvaluatePrintStatement(a_statement);
+		EvaluatePrintStatement(a_statement);
+		return a_nextStatement + 1;
 	case StatementType::ReadStat:
-		//EvaluateReadStatement(a_statement);
-		//return a_nextStatement + 1;
+		EvaluateReadStatement(a_statement);
+		return a_nextStatement + 1;
 
 	case StatementType::gotoStat:
 
@@ -58,6 +71,17 @@ int DuckInterpreter::ExecuteStatement(string a_statement, int a_nextStatement)
 		exit(1);
 	}
 }
+
+void DuckInterpreter::EvaluateReadStatement(const string &a_statement)
+{
+	int nextPos = 0;
+	string resultVariable;
+	double placeHolder;
+	nextPos = ParseNextElement(a_statement, nextPos, resultVariable, placeHolder);
+	cout << "here the value of resultVariable is" << resultVariable << endl;
+	assert(!resultVariable.empty());
+}
+
 // we know at this point that we have an arithementic expression.  Excute this statement.  Any error
 // will perminate the program.
 void DuckInterpreter::EvaluateArithmentStatment(const string &a_statement)
@@ -153,7 +177,105 @@ int DuckInterpreter::EvaluateIfStatement(string a_statement, int a_nextStatement
 	return labelLocation;
 }
 
-int DuckInterpreter::EvaluatePrintStatement(string a_statement)
+void DuckInterpreter::EvaluatePrintStatement(string a_statement)
 {
+	int nextPos = 0;
+	int previousPos = 0;
+	string resultString;
+	double placeHolder;
+
+
+	nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+	assert(resultString == "print");
+	string displayString;
+	bool isQuoteSet = false;
+	
+	
+	while (true)
+	{
+		resultString.clear();
+		nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+		
+		if (!resultString.empty() && resultString == "\"")
+		{
+			for (unsigned int i = nextPos; i < a_statement.length(); i++)
+			{
+				if (a_statement[i] == '"')
+				{
+					nextPos = i + 1;
+					break;
+				}
+				else
+				{
+					displayString += a_statement[i];
+				}
+			}
+			cout << displayString;
+			displayString.clear();
+		}
+
+		else if (!resultString.empty() && (resultString == "," || resultString.length()>=1))
+		{
+			resultString.clear();
+			nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+			//if number turn into string and append
+			if (!resultString.empty())
+			{
+				double value;
+				bool isExists = m_symbolTable.GetVariableValue(resultString, value);
+				if (isExists)
+				{
+					cout << value;
+				}
+				else
+				{
+					cerr << "BUGBUG - program terminate: undefined variable " << a_statement << endl;
+					exit(1);
+				}
+			}
+			else
+			{
+				cerr << "BUGBUG - Please enter only variable names in print statements"<< a_statement <<endl;
+				exit(1);
+			}
+		}
+		
+
+		resultString.clear();
+		nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+		if (resultString == ",")
+		{
+			continue;
+			resultString.clear();
+			nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+			//if number turn into string and append
+			if (!resultString.empty())
+			{
+				double value;
+				bool isExists = m_symbolTable.GetVariableValue(resultString, value);
+				if (isExists)
+				{
+					cout << value;
+				}
+				else
+				{
+					cerr << "BUGBUG - program terminate: undefined variable " << a_statement << endl;
+					exit(1);
+				}
+			}
+			else
+			{
+				cout << placeHolder;
+			}
+		}
+		if(resultString == ";")
+		{
+			break;
+		}
+	}
+	if (resultString == ";")
+	{
+		cout << displayString <<endl;
+	}
 
 }

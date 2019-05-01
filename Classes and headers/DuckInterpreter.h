@@ -287,8 +287,8 @@ private:
 				double returnValue;
 				if (!valueOrOperator.empty())
 				{
-					bool isExits = m_symbolTable.GetVariableValue(valueOrOperator, returnValue);
-					if (isExits)
+					bool isExists = m_symbolTable.GetVariableValue(valueOrOperator, returnValue);
+					if (isExists)
 					{
 						m_numberStack.push_back(returnValue);
 					}
@@ -323,6 +323,8 @@ private:
 
 	int EvaluateIfStatement(string a_statement, int a_nextStatement);
 
-	int EvaluatePrintStatement(string a_statement);
+	void EvaluatePrintStatement(string a_statement);
+
+	void EvaluateReadStatement(const string &a_statement);
 };
 
