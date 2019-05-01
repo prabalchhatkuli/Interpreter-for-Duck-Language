@@ -123,7 +123,7 @@ private:
 			{
 				tempString += a_statement[i];
 			}
-			if (true == ignoredSpace && (a_statement[i] == '=') || (a_statement[i] == '+') || (a_statement[i] == '-') || (a_statement[i] == '*') || (a_statement[i] == '/') || (a_statement[i] == ';')|| (a_statement[i] == '(')|| (a_statement[i] == ')'))
+			if (true == ignoredSpace && (a_statement[i] == '=') || (a_statement[i] == ',') || (a_statement[i] == '"') || (a_statement[i] == '+') || (a_statement[i] == '-') || (a_statement[i] == '*') || (a_statement[i] == '/') || (a_statement[i] == ';')|| (a_statement[i] == '(')|| (a_statement[i] == ')'))
 			{
 				if (tempString.length() == 0)
 				{
