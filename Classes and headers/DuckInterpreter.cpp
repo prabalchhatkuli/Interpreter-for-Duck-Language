@@ -55,6 +55,7 @@ int DuckInterpreter::ExecuteStatement(string a_statement, int a_nextStatement)
 	case StatementType::IfStat:
 		return EvaluateIfStatement(a_statement, a_nextStatement);
 	case StatementType::StopStat:
+		exit(0);
 	case StatementType::EndStat: 
 		exit(0);
 	case StatementType::PrintStat:
@@ -212,16 +213,17 @@ void DuckInterpreter::EvaluatePrintStatement(string a_statement)
 					}
 				}
 				cout << displayString;
+				firstPrint = true;
 				displayString.clear();
-				continue;
 			}
 
-			else if (resultString == ",")
+			else if (resultString == ","&& firstPrint==true)
 			{
+				int prevPos = nextPos;
 				resultString.clear();
 				nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
 				//if number turn into string and append
-				if (!resultString.empty())
+				if (!resultString.empty() && resultString!="\"")
 				{
 					double value;
 					bool isExists = m_symbolTable.GetVariableValue(resultString, value);
@@ -229,36 +231,55 @@ void DuckInterpreter::EvaluatePrintStatement(string a_statement)
 					{
 						cout << value;
 					}
-
 					else
 					{
 						cerr << "BUGBUG - program terminate: undefined variable " << a_statement << endl;
 						exit(1);
 					}
 				}
-
+				else if (resultString == "\"")
+				{
+					nextPos = prevPos;
+					continue;
+				}
 				else
 				{
-					cerr << "BUGBUG - Please enter only variable names in print statements" << a_statement << endl;
+					cerr << "BUGBUG - No numbers allowed in print statements" << a_statement << endl;
 					exit(1);
 				}
-				continue;
+				//disregarding the comma that comes right after
+				resultString.clear();
+				if (a_statement[nextPos] == ';')
+				{
+					break;
+				}
+				nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+				if (resultString.empty() || resultString != ",")
+				{
+					cerr << "BUGBUG - a comma or semicolon must follow after each argument of a print statement" << a_statement << endl;
+					exit(1);
+				}
 			}
 			else
 			{
-				if (!resultString.empty())
+				double value;
+				bool isExists = m_symbolTable.GetVariableValue(resultString, value);
+				if (isExists)
 				{
-					double value;
-					bool isExists = m_symbolTable.GetVariableValue(resultString, value);
-					if (isExists)
-					{
-						cout << value;
-					}
-					else
-					{
-						cerr << "BUGBUG - program terminate: undefined variable " << a_statement << endl;
-						exit(1);
-					}
+					cout << value;
+					firstPrint = true;
+				}
+				else
+				{
+					cerr << "BUGBUG - program terminate: undefined variable " << a_statement << endl;
+					exit(1);
+				}
+				resultString.clear();
+				nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+				if (resultString != ";" && resultString != ",")
+				{
+					cerr << "BUGBUG - program terminate: must be followed by , or \"."<< a_statement << endl;
+					exit(1);
 				}
 			}
 		}
@@ -267,11 +288,5 @@ void DuckInterpreter::EvaluatePrintStatement(string a_statement)
 			cerr << "BUGBUG - no variable type or statement type in print statement" << a_statement << endl;
 			exit(1);
 		}
-
-		if (resultString == ";")
-		{
-			cout << displayString << endl;
-		}
-
-	}
-}
+	}//end of while
+}//end of function

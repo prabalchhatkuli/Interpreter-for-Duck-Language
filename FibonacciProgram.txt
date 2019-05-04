@@ -1,7 +1,9 @@
 
 k = 2*(3+5) /7 -2;
-print "Hello mr how do you do? the answer that you are searching for is ",k " =",k;
+k=k+1;
+print ,"the answer that you are searching for is ",k ," which is modified to ",k  ,   "tehets", "    hehehe.";
 end;
+
 read "How many factorials: ", n;
 
 k = 1;  // The first factorial we wish to compute.
