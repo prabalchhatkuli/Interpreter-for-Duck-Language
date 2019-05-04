@@ -1,8 +1,8 @@
 
- k = 10 ;
-pade: print "the answer that you are searching for is ",k ," which is modified to ",k  ,   "tehets", "    hehehe.";
-k=k-1;  
-if(k>1) goto pade;
+ k  =   10   ;
+pade: print "the answer that you are searching for is " ,  k   ;
+k  =  k -  1  ;  
+if  (  k  >  1  )  goto      pade   ;
 end;
 2*(3+5) /7 - 2
 k=k-1;  //if(k>1)goto pade; 

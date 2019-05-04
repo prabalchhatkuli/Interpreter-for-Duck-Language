@@ -192,6 +192,10 @@ void DuckInterpreter::EvaluatePrintStatement(string a_statement)
 	{
 		resultString.clear();
 		nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+		if (resultString == ";")
+		{
+			break;
+		}
 		if (!resultString.empty())
 		{
 			if (resultString == "\"")
@@ -213,7 +217,7 @@ void DuckInterpreter::EvaluatePrintStatement(string a_statement)
 				displayString.clear();
 			}
 
-			else if (resultString == ","&& firstPrint==true)
+			else if (resultString == "," && firstPrint==true)
 			{
 				int prevPos = nextPos;
 				resultString.clear();
@@ -243,13 +247,11 @@ void DuckInterpreter::EvaluatePrintStatement(string a_statement)
 					cerr << "BUGBUG - No numbers allowed in print statements" << a_statement << endl;
 					exit(1);
 				}
-				//disregarding the comma that comes right after
+				//dealing with the comma or the semicolon that comes right after
 				resultString.clear();
-				if (a_statement[nextPos] == ';')
-				{
-					break;
-				}
+				if (a_statement[nextPos] == ';'){	break;}
 				nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+				if (resultString == ";") { break; }
 				if (resultString.empty() || resultString != ",")
 				{
 					cerr << "BUGBUG - a comma or semicolon must follow after each argument of a print statement" << a_statement << endl;
