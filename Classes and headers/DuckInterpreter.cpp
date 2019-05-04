@@ -94,18 +94,13 @@ void DuckInterpreter::EvaluateArithmentStatment(const string &a_statement)
 	string resultVariable;
 	double placeHolder;
 	nextPos = ParseNextElement(a_statement, nextPos, resultVariable, placeHolder);
-	cout << "here the value of resultVariable is"<<resultVariable << endl;
 	assert(!resultVariable.empty());
 
 	string assigmentOp;
 	nextPos = ParseNextElement(a_statement, nextPos, assigmentOp, placeHolder);
-	cout << "here the value of assignment operator is " << assigmentOp << endl;
 	assert(assigmentOp == "=");//correction made here
 
 	double result = EvaluateArithmenticExpression(a_statement, nextPos);
-	cout << "here the result of the arithemetic evaluation is::::::::::::::::::::::::::::::::::::::::::::::::::::"<<endl;
-	cout << result <<endl;
-	cout << ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << endl;
 
 	// Record the result.
 	m_symbolTable.RecordVariableValue(resultVariable, result);
@@ -132,7 +127,7 @@ int DuckInterpreter::EvaluateIfStatement(string a_statement, int a_nextStatement
 	{
 		cout << "goto found at:" << foundLabel << endl;
 		labelPosition = foundLabel + 4;
-		//find the label
+		//find the label(following goto)
 		for (unsigned int i = labelPosition; i < a_statement.length(); i++)
 		{
 			if (!isspace(a_statement[i]) && (isalnum(a_statement[i]) || a_statement[i] == '_'))
@@ -159,19 +154,20 @@ int DuckInterpreter::EvaluateIfStatement(string a_statement, int a_nextStatement
 	}
 	else
 	{
-		cerr << "bugbug : goto statement not found in if clause" << endl;
+		cerr << "bugbug : goto statement missing in if clause" << endl;
 		exit(1);
 	}
-	//replace everything from(goto to end of string) with ;
+	//replace everything from(goto to end of string) with a semicolon(;)
 	a_statement.replace(a_statement.begin() + foundLabel, a_statement.end(), ";");
 	//----------------------------------------------------------------------------------
 	int labelLocation = m_statements.GetLabelLocation(label);
+	cout << labelLocation << endl;
+	//here error will be displayed if label is not found
 
-	// Verify that the label from the goto exists.
-
-	// Evaluate the emaining arithmentic expression. 
+	// Evaluate the remaining arithmentic expression. 
+	cout << a_statement << endl;
+	cout << nextPos << endl;
 	double result = EvaluateArithmenticExpression(a_statement, nextPos);
-
 	// If the result is zero, don't execute the goto.
 	if (result == 0)
 	{

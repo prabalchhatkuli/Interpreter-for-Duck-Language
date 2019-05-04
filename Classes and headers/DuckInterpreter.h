@@ -14,7 +14,6 @@ public:
 	}
 	// Runs the interpreter on the recorded statements.
 	void RunInterpreter();
-
 private:
 
 	// The statement object that holds the recorded statements.
@@ -123,7 +122,7 @@ private:
 			{
 				tempString += a_statement[i];
 			}
-			if (true == ignoredSpace && (a_statement[i] == '=') || (a_statement[i] == ',') || (a_statement[i] == '"') || (a_statement[i] == '+') || (a_statement[i] == '-') || (a_statement[i] == '*') || (a_statement[i] == '/') || (a_statement[i] == ';')|| (a_statement[i] == '(')|| (a_statement[i] == ')'))
+			if (true == ignoredSpace && (a_statement[i] == '=') || (a_statement[i] == '>') ||(a_statement[i] == '<') ||(a_statement[i] == ',') || (a_statement[i] == '"') || (a_statement[i] == '+') || (a_statement[i] == '-') || (a_statement[i] == '*') || (a_statement[i] == '/') || (a_statement[i] == ';')|| (a_statement[i] == '(')|| (a_statement[i] == ')'))
 			{
 				if (tempString.length() == 0)
 				{
@@ -183,14 +182,14 @@ private:
 		{
 			return 4;
 		}
-		if (op[0] == '(' || op[0] == ')')
+		if (op[0] == '<' || op[0] == '>')
 		{
 			return 3;
 		}
-	/*	if (op[0] == '<' || op[0] == '>')
+		if (op[0] == '(' || op[0] == ')')
 		{
 			return 2;
-		}*/
+		}
 		//need something for > and < operators
 		if (op[0]=='['||op[0]==';')
 		{
@@ -211,6 +210,12 @@ private:
 				return val1 * val2;
 			case '/':
 				return val1 / val2;
+			case '>':
+				if (val1 > val2) { return 1; }
+				else { return 0; }
+			case '<':
+				if (val1 < val2) { return 1; }
+				else { return 0; }
 		}
 	}
 
@@ -220,6 +225,7 @@ private:
 	// Evaluate an arithmetic expression.  Return the value.  The variable a_nextPos is index to the next  
 	double EvaluateArithmenticExpression(const string &a_statement, int a_nextPos) 
 	{
+		cout << a_nextPos << endl;
 		double finalValue=0;
 		m_operatorStack.push_back('[');
 		//read values until the semicolon is read
@@ -229,9 +235,17 @@ private:
 			double numericalOperand;
 			//parsed one thing from the statement at a time and inserted into respective stack: operator, number
 			a_nextPos = ParseNextElement(a_statement, a_nextPos, valueOrOperator, numericalOperand);
-			
+			if (valueOrOperator == ";")
+			{
+				break;
+			}
+			/*
+			cout << "-------------------------" << endl;
+			cout << "valueOrOperator---->" << valueOrOperator << endl;
+			cout << "numericalOperand---->" << numericalOperand << endl;
+			*/
 			//if single letter operator push to operator stack
-			if (!valueOrOperator.empty() && valueOrOperator.length() <= 2 && valueOrOperator.length() > 0 && !isalnum(valueOrOperator[0]))
+			if (!valueOrOperator.empty() && valueOrOperator.length()>0 && valueOrOperator.length() <= 2 && !isalnum(valueOrOperator[0]))
 			{
 				if (valueOrOperator.length()==2 && isalnum(valueOrOperator[1]))
 				{}
@@ -265,6 +279,7 @@ private:
 					//if the size of the operator stack is more than one and the precedence of the current operator is less than 
 					//the previous operator or equal to it
 					string previousPrecedence(1, m_operatorStack.back());
+					cout << "the operator is ::::::: " << valueOrOperator << endl;
 					while (m_operatorStack.size() > 1 && FindPrecedence(valueOrOperator)/*new*/ <= /*from stack*/FindPrecedence(previousPrecedence))
 					{
 						//the operands
@@ -277,6 +292,7 @@ private:
 						m_operatorStack.pop_back();
 						m_numberStack.push_back(findValue(double_value1, double_value2, operate));
 					}
+					
 					m_operatorStack.push_back(valueOrOperator[0]);
 				}
 			}
@@ -318,6 +334,7 @@ private:
 			m_numberStack.push_back(findValue(double_value1, double_value2, operate));
 		}
 		//the return value is the last remaining thing in the number stack
+		cout <<"The returned value is:::::::::::::::::::::::::::::::------:::::" <<m_numberStack.back() << endl;
 		return m_numberStack.back();
 	}
 
