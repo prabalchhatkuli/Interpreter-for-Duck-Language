@@ -23,7 +23,11 @@ public:
 			a_value = m_SymbolTable.find(a_variable)->second;
 			return true;
 		}
-	};
+	}
+	void replaceVariableValue(string a_variable, double a_value)
+	{
+		m_SymbolTable[a_variable] = a_value;
+	}
 
 private:
 	unordered_map<string, double> m_SymbolTable;

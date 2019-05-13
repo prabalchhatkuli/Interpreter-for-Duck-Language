@@ -1,27 +1,21 @@
+ 
 
- k  =   10   ;
-pade: print "the answer that you are searching for is " ,  k   ;
-k  =  k -  1  ;  
-if  (  k  >  1  )  goto      pade   ;
-end;
-2*(3+5) /7 - 2
-k=k-1;  //if(k>1)goto pade; 
 read "How many factorials: ", n;
 
 k = 1;  // The first factorial we wish to compute.
 
-factC: fact = 1;  // Will hold the value of the factorial when we are done.
+FactC: fact = 1;  // Will hold the value of the factorial when we are done.
 
 i =1;
 
 loop:    fact = fact * i;
 
-if( i >= k ) goto next;
+if( i > k - 1) goto next;
 
 i = i + 1;
 goto loop;
 
-next:  print "fact of: ", i " = ", fact;
+next:  print "fact of: ", i,  " = ", fact;    // You don't need to support the second string.
           k = k + 1;
           if( k > n ) goto done;
           goto  FactC;

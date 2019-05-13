@@ -66,6 +66,7 @@ int DuckInterpreter::ExecuteStatement(string a_statement, int a_nextStatement)
 		return a_nextStatement + 1;
 
 	case StatementType::gotoStat:
+		return EvaluateGotoStatement(a_statement);
 
 	default:
 		cerr << "BUGBUG - program terminate: invalid return value from GetStatementStype for the statement: " << a_statement << endl;
@@ -73,16 +74,90 @@ int DuckInterpreter::ExecuteStatement(string a_statement, int a_nextStatement)
 	}
 }
 
+int DuckInterpreter::EvaluateGotoStatement(string a_statement)
+{
+	int nextPos = 0;
+	string resultString;
+	double placeHolder;
+
+	nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+	assert(!resultString.empty());
+	assert(resultString == "goto");
+
+	resultString.clear();
+	nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+	assert(!resultString.empty());
+
+	int labelLocation = m_statements.GetLabelLocation(resultString);
+
+	resultString.clear();
+	nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+	if (resultString != ";")
+	{
+		cerr << "BUGBUG - program terminate: semicolon must follow the goto label " << a_statement << endl;
+		exit(1);
+	}
+	return labelLocation;
+}
+
 void DuckInterpreter::EvaluateReadStatement(const string &a_statement)
 {
-	/*
 	int nextPos = 0;
-	string resultVariable;
+	string resultString;
 	double placeHolder;
-	nextPos = ParseNextElement(a_statement, nextPos, resultVariable, placeHolder);
-	cout << "here the value of resultVariable is" << resultVariable << endl;
-	assert(!resultVariable.empty());
-	*/
+
+	nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+	assert(!resultString.empty());
+	assert(resultString == "read");
+
+	resultString.clear();
+	nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+	assert(resultString == "\"");
+	//display prompt between two quotes
+	string displayString;
+	for (unsigned int i = nextPos; i < a_statement.length(); i++)
+	{
+		if (a_statement[i] == '"')
+		{
+			nextPos = i + 1;
+			break;
+		}
+		else
+		{
+			displayString += a_statement[i];
+		}
+	}
+	cout << displayString;
+	//assert that there is a comma after the quotes
+	while (a_statement[nextPos] != ';')
+	{
+		resultString.clear();
+		nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+		if (resultString == ";")
+		{
+			break;
+		}
+		assert(resultString == ",");
+		//parse next element again
+		resultString.clear();
+		nextPos = ParseNextElement(a_statement, nextPos, resultString, placeHolder);
+		assert(!resultString.empty());
+
+		double value;
+		double result;
+		bool isExists = m_symbolTable.GetVariableValue(resultString, value);
+		if (isExists)
+		{
+			cin >> result;
+			m_symbolTable.replaceVariableValue(resultString, result);
+		}
+		else
+		{
+			cin >> result;
+			m_symbolTable.RecordVariableValue(resultString, result);
+		}
+	}
+
 }
 
 // we know at this point that we have an arithementic expression.  Excute this statement.  Any error
@@ -125,7 +200,6 @@ int DuckInterpreter::EvaluateIfStatement(string a_statement, int a_nextStatement
 	unsigned int foundLabel = a_statement.find("goto");
 	if (foundLabel != string::npos)
 	{
-		cout << "goto found at:" << foundLabel << endl;
 		labelPosition = foundLabel + 4;
 		//find the label(following goto)
 		for (unsigned int i = labelPosition; i < a_statement.length(); i++)
@@ -148,9 +222,6 @@ int DuckInterpreter::EvaluateIfStatement(string a_statement, int a_nextStatement
 			cerr << "bugbug : missing label in goto statement" << endl;
 			exit(1);
 		}
-		cout << "::::::::::::::::::::::::::::::::" << endl;
-		cout << label << "oo" << endl;
-		cout << ":::::::::::::::::::::::::::::::::" << endl;
 	}
 	else
 	{
@@ -161,12 +232,9 @@ int DuckInterpreter::EvaluateIfStatement(string a_statement, int a_nextStatement
 	a_statement.replace(a_statement.begin() + foundLabel, a_statement.end(), ";");
 	//----------------------------------------------------------------------------------
 	int labelLocation = m_statements.GetLabelLocation(label);
-	cout << labelLocation << endl;
 	//here error will be displayed if label is not found
 
 	// Evaluate the remaining arithmentic expression. 
-	cout << a_statement << endl;
-	cout << nextPos << endl;
 	double result = EvaluateArithmenticExpression(a_statement, nextPos);
 	// If the result is zero, don't execute the goto.
 	if (result == 0)
@@ -287,4 +355,5 @@ void DuckInterpreter::EvaluatePrintStatement(string a_statement)
 			exit(1);
 		}
 	}//end of while
+	cout << endl;
 }//end of function

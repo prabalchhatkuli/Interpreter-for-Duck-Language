@@ -225,7 +225,6 @@ private:
 	// Evaluate an arithmetic expression.  Return the value.  The variable a_nextPos is index to the next  
 	double EvaluateArithmenticExpression(const string &a_statement, int a_nextPos) 
 	{
-		cout << a_nextPos << endl;
 		double finalValue=0;
 		m_operatorStack.push_back('[');
 		//read values until the semicolon is read
@@ -279,7 +278,6 @@ private:
 					//if the size of the operator stack is more than one and the precedence of the current operator is less than 
 					//the previous operator or equal to it
 					string previousPrecedence(1, m_operatorStack.back());
-					cout << "the operator is ::::::: " << valueOrOperator << endl;
 					while (m_operatorStack.size() > 1 && FindPrecedence(valueOrOperator)/*new*/ <= /*from stack*/FindPrecedence(previousPrecedence))
 					{
 						//the operands
@@ -334,7 +332,6 @@ private:
 			m_numberStack.push_back(findValue(double_value1, double_value2, operate));
 		}
 		//the return value is the last remaining thing in the number stack
-		cout <<"The returned value is:::::::::::::::::::::::::::::::------:::::" <<m_numberStack.back() << endl;
 		return m_numberStack.back();
 	}
 
@@ -343,5 +340,7 @@ private:
 	void EvaluatePrintStatement(string a_statement);
 
 	void EvaluateReadStatement(const string &a_statement);
+
+	int EvaluateGotoStatement(string a_statement);
 };
 

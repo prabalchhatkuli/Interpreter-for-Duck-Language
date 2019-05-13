@@ -15,7 +15,6 @@ public:
 	{
 		if (m_labelToStatement.find(a_string)!=m_labelToStatement.end())
 		{
-			cout << a_string << endl;
 			return m_labelToStatement.find(a_string)->second;
 		}
 		else
