@@ -6,23 +6,9 @@ public:
 	~Statement();
 
 	void RecordStatements(string a_sourceFileName);
-	string GetStatement(int a_statementNum)
-	{
-		return m_statements[a_statementNum];
-	}
+	string GetStatement(int a_statementNum);
 
-	int GetLabelLocation(string a_string)
-	{
-		if (m_labelToStatement.find(a_string)!=m_labelToStatement.end())
-		{
-			return m_labelToStatement.find(a_string)->second;
-		}
-		else
-		{
-			cerr << "BugBug : the label was not found in the map of the labels" << endl;
-			exit(0);
-		} 
-	}
+	int GetLabelLocation(string a_string);
 
 	//these are used to assist the recordStatement function
 	bool colonPresence(string findcolon);

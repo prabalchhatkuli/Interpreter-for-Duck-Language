@@ -11,6 +11,24 @@ Statement::~Statement()
 {
 }
 
+string Statement::GetStatement(int a_statementNum)
+{
+	return m_statements[a_statementNum];
+}
+
+int Statement::GetLabelLocation(string a_string)
+{
+	if (m_labelToStatement.find(a_string) != m_labelToStatement.end())
+	{
+		return m_labelToStatement.find(a_string)->second;
+	}
+	else
+	{
+		cerr << "BugBug : the label was not found in the map of the labels" << endl;
+		exit(0);
+	}
+}
+
 bool Statement::colonPresence(string findcolon)
 {
 	for (int i = 0; i < findcolon.length(); i++)
@@ -87,25 +105,6 @@ void Statement::RecordStatements(string a_sourceFileName)//passing to the functi
 		}
 		counter++;
 	}
-	/*
-	for (vector<string>::iterator it = m_statements.begin(); it != m_statements.end(); ++it)
-	{
-		string processString = (*it);
-		bool foundSemicolon = false;
-		for (int i = processString.length()-1; i < processString.length(); i--)
-		{
-			if (processString[i] == ';')
-			{
-				foundSemicolon = true;
-				(*it) = processString.substr(0, i + 1);
-				break;
-			}
-		}
-		if (foundSemicolon == false)
-		{
-			m_statements.erase(it);
-		}
-	}*/
 	//checking by printing
 	for (vector<string>::iterator it = m_statements.begin(); it != m_statements.end(); ++it)
 	{
