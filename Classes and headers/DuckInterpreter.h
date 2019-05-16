@@ -9,7 +9,6 @@ public:
 
 	// Records the statements that are in the specified file.
 	void RecordStatements(string a_fileName);
-
 	// Runs the interpreter on the recorded statements.
 	void RunInterpreter();
 private:
@@ -36,7 +35,24 @@ private:
 		gotoStat,
 	};
 
-	// Determines the type of the next statement.
+	/**/
+	/*
+	GetStatementStype()
+	NAME
+			GetStatementStype -  Determines the type of the next statement
+	SYNOPSIS
+			StatementType GetStatementStype(const string &a_string);
+				a_string             --> the statement whose type we need to find
+	DESCRIPTION
+			evaluates the first word expression form a_string, then evaluates the type of statement based on the first word
+	RETURNS
+			an object - enum of StatementType, which has one of seven total possibilities
+	AUTHOR
+			Prabal Chhatkuli
+	DATE
+			11:40 am 4/19/2019
+	*/
+	/**/
 	StatementType GetStatementStype(const string &a_string)
 	{
 		string typeKey = "";
@@ -94,7 +110,7 @@ private:
 		{
 			return StatementType::ArithmeticStat;
 		}
-	}
+	}/*StatementType GetStatementStype(const string &a_string);*/
 
 	enum class ElementType
 	{
@@ -111,7 +127,7 @@ private:
 	// Returns the precedence of an operator.
 	int FindPrecedence(string op);
 
-	//performs arithmetic expression
+	//performs arithmetic operation
 	double findValue(double val1, double val2, char operate);
 
 	// Evaluate an arithmetic statement.

@@ -11,11 +11,54 @@ DuckInterpreter::~DuckInterpreter()
 {
 }
 
+/**/
+/*
+DuckInterpreter::RecordStatements()
+
+NAME
+		DuckInterpreter::RecordStatements - Records the statement that are in the specified file.
+SYNOPSIS
+		void DuckInterpreter::RecordStatements(string a_fileName);
+			a_filename             --> the file to record the statements from.
+DESCRIPTION
+		calls the RecordStatements() function for the statement class object: m_statements, which is a
+		private member variable of the calling class.
+RETURNS
+		void
+AUTHOR
+		Prabal Chhatkuli
+DATE
+		10:55pm 4/16/2019
+*/
+/**/
 void DuckInterpreter::RecordStatements(string a_fileName)
 {
 	m_statements.RecordStatements(a_fileName);
-}
+}/*void DuckInterpreter::RecordStatements(string a_fileName);*/
 
+
+/**/
+/*
+DuckInterpreter::EvaluateArithmenticExpression()
+
+NAME
+		DuckInterpreter::EvaluateArithmenticExpression -  Evaluate an arithmetic statement
+SYNOPSIS
+		double DuckInterpreter::EvaluateArithmenticExpression(const string &a_statement, int a_nextPos);
+			a_statement             --> the statement whose value we need to evaluate
+			a_nextPos             --> the position of next character to be read in the statement
+DESCRIPTION
+		iterates through an arithmetic statement to find value and operators, inserting them in respective operator stack
+		or number stack and evaluate the final result by evaluating according to the precedence of the operators and placement 
+		of numbers in the number stack
+RETURNS
+		the final result of evaluating the expression which is stored at the end of the number stack at the end of the function
+AUTHOR
+		Prabal Chhatkuli
+DATE
+		8:30pm 4/17/2019
+*/
+/**/
 double DuckInterpreter::EvaluateArithmenticExpression(const string &a_statement, int a_nextPos)
 {
 	double finalValue = 0;
@@ -31,11 +74,7 @@ double DuckInterpreter::EvaluateArithmenticExpression(const string &a_statement,
 		{
 			break;
 		}
-		/*
-		cout << "-------------------------" << endl;
-		cout << "valueOrOperator---->" << valueOrOperator << endl;
-		cout << "numericalOperand---->" << numericalOperand << endl;
-		*/
+
 		//if single letter operator push to operator stack
 		if (!valueOrOperator.empty() && valueOrOperator.length() > 0 && valueOrOperator.length() <= 2 && !isalnum(valueOrOperator[0]))
 		{
@@ -127,8 +166,28 @@ double DuckInterpreter::EvaluateArithmenticExpression(const string &a_statement,
 	}
 	//the return value is the last remaining thing in the number stack
 	return m_numberStack.back();
-}
+}/*double DuckInterpreter::EvaluateArithmenticExpression(const string &a_statement, int a_nextPos);*/
 
+
+/**/
+/*
+DuckInterpreter::RunInterpreter()
+
+NAME
+		DuckInterpreter::RunInterpreter -  Runs the interpreter on the recorded statements.
+SYNOPSIS
+		void DuckInterpreter::RunInterpreter();
+DESCRIPTION
+		goes through the statements atrting at statement 0, recorded in the m_statements object of Statement class, and
+		progressing according to the number of next statement that is returned after the execution of the statement
+RETURNS
+		void
+AUTHOR
+		Prabal Chhatkuli
+DATE
+		9:45pm 4/16/2019
+*/
+/**/
 void DuckInterpreter::RunInterpreter()
 {
 	int nextStatement = 0;
@@ -139,8 +198,28 @@ void DuckInterpreter::RunInterpreter()
 
 		nextStatement = ExecuteStatement(statement, nextStatement);
 	}
-}
+}/*void DuckInterpreter::RunInterpreter();*/
 
+/**/
+/*
+DuckInterpreter::FindPrecedence()
+
+NAME
+		DuckInterpreter::FindPrecedence -  Returns the precedence of an operator
+SYNOPSIS
+		int DuckInterpreter::FindPrecedence(string op);
+			op             --> a string which contains a operator
+DESCRIPTION
+		finds the precedence of the operator based on a couple of if statements that determine
+		the hirearchy of the operators
+RETURNS
+		an integer value that shows the operators position in the hirearchy
+AUTHOR
+		Prabal Chhatkuli
+DATE
+		9:45pm 4/21/2019
+*/
+/**/
 int DuckInterpreter::FindPrecedence(string op)
 {
 	if (op[0] == '*' || op[0] == '/')
@@ -159,13 +238,32 @@ int DuckInterpreter::FindPrecedence(string op)
 	{
 		return 2;
 	}
-	//need something for > and < operators
 	if (op[0] == '[' || op[0] == ';')
 	{
 		return 1;
 	}
-}
+}/*int DuckInterpreter::FindPrecedence(string op)*/
 
+
+/**/
+/*
+DuckInterpreter::findValue()
+NAME
+		DuckInterpreter::findValue -  performs arithmetic operation
+SYNOPSIS
+		double DuckInterpreter::findValue(double val1, double val2, char operate);
+			val1, val2             --> number variables that are on either side of an operator
+			operate             --> the operator which determines the operation
+DESCRIPTION
+		switch statement changes based on the different possibility of operate variable and accordingly arithmetic values are calculated
+RETURNS
+		a double value calculated by using a specific operation based on a operator between two numbers
+AUTHOR
+		Prabal Chhatkuli
+DATE
+		1:10pm 4/21/2019
+*/
+/**/
 double DuckInterpreter::findValue(double val1, double val2, char operate)
 {
 	switch (operate)
@@ -185,8 +283,32 @@ double DuckInterpreter::findValue(double val1, double val2, char operate)
 		if (val1 < val2) { return 1; }
 		else { return 0; }
 	}
-}
+}/*double DuckInterpreter::findValue(double val1, double val2, char operate);*/
 
+/**/
+/*
+DuckInterpreter::ParseNextElement()
+NAME
+		DuckInterpreter::ParseNextElement -  Returns the next element in the statement.  Returns the next location to be accessed.
+SYNOPSIS
+		int DuckInterpreter::ParseNextElement(const string &a_statement, int a_nextPos, string &a_stringValue, double &numValue);
+			a_statement             --> the statement to be parsed
+			a_nextPos             --> the position of the next parsing to start from
+			a_stringValue             -->  contains the returned value of the parsed value if it is a string
+			numValue             --> contains returned value of the parsed value if it is a number
+DESCRIPTION
+		iterates through a_statement(starting from a_nextPos place) and parses each string, operator, or number. Parsing is based on
+		the space in the statement or specific characters in the statement. Also, this function determines the type of the parsed
+		element and passed by reference through the appropriate variable.
+RETURNS
+		an integer that determines the next position from where the parsing should start from. Also, passed by reference is the 
+		value of element that was parsed. it is in a_stringVlaue if it is a string or an operator and in numValue if it has a number value
+AUTHOR
+		Prabal Chhatkuli
+DATE
+		12:30am 4/23/2019
+*/
+/**/
 int DuckInterpreter::ParseNextElement(const string &a_statement, int a_nextPos, string &a_stringValue, double &numValue)
 {
 	string tempString = "";
@@ -248,8 +370,28 @@ int DuckInterpreter::ParseNextElement(const string &a_statement, int a_nextPos, 
 		a_stringValue = tempString;
 	}
 	return a_nextPos;
-}
+}/*int DuckInterpreter::ParseNextElement(const string &a_statement, int a_nextPos, string &a_stringValue, double &numValue)*/
 
+/**/
+/*
+DuckInterpreter::ExecuteStatement()
+NAME
+		DuckInterpreter::ExecuteStatement -  Executes the statement at the specified location.  Returns the location of the next statement to be executed.
+SYNOPSIS
+		int DuckInterpreter::ExecuteStatement(string a_statement, int a_nextStatement);
+			a_statement             --> the statement to be executed
+			a_nextStatement             --> postion of the statement in the record
+DESCRIPTION
+		Gets the statement type of the function. Then based on the type of function calls functions and executes statements using the 
+		function.
+RETURNS
+		Returns the location of the next statement to be executed. It is an integer value.
+AUTHOR
+		Prabal Chhatkuli
+DATE
+		4:30pm 4/20/2019
+*/
+/**/
 int DuckInterpreter::ExecuteStatement(string a_statement, int a_nextStatement)
 {
 	// Clear the stacks
@@ -287,8 +429,27 @@ int DuckInterpreter::ExecuteStatement(string a_statement, int a_nextStatement)
 		cerr << "BUGBUG - program terminate: invalid return value from GetStatementStype for the statement: " << a_statement << endl;
 		exit(1);
 	}
-}
+}/*int DuckInterpreter::ExecuteStatement(string a_statement, int a_nextStatement);*/
 
+/**/
+/*
+DuckInterpreter::EvaluateGotoStatement()
+NAME
+		DuckInterpreter::EvaluateGotoStatement - finds the location of the label of a goto statement 
+SYNOPSIS
+		int DuckInterpreter::EvaluateGotoStatement(string a_statement);
+			a_statement             --> the statement to find the label from
+DESCRIPTION
+		Parses the elements and finds the name of label and find the line that the label is located in by comparing to 
+		the map of labels, from the record.
+RETURNS
+		Returns the location of the label in the goto. Integer, to locate the line to go to.
+AUTHOR
+		Prabal Chhatkuli
+DATE
+		10:30pm 4/26/2019
+*/
+/**/
 int DuckInterpreter::EvaluateGotoStatement(string a_statement)
 {
 	int nextPos = 0;
@@ -313,8 +474,27 @@ int DuckInterpreter::EvaluateGotoStatement(string a_statement)
 		exit(1);
 	}
 	return labelLocation;
-}
+}/*int DuckInterpreter::EvaluateGotoStatement(string a_statement);*/
 
+/**/
+/*
+DuckInterpreter::EvaluateReadStatement()
+NAME
+		DuckInterpreter::EvaluateReadStatement - evaluates a statement of read type
+SYNOPSIS
+		void DuckInterpreter::EvaluateReadStatement(const string &a_statement);
+			a_statement             --> the statement to execute the read operation from
+DESCRIPTION
+		takes a statement and parses through it to display the input prompt in between two double quotes and 
+		takes input from user based on the variables in between commas and inserts them in our map of symbol
+RETURNS
+		void
+AUTHOR
+		Prabal Chhatkuli
+DATE
+		7:30pm 5/6/2019
+*/
+/**/
 void DuckInterpreter::EvaluateReadStatement(const string &a_statement)
 {
 	int nextPos = 0;
@@ -375,6 +555,27 @@ void DuckInterpreter::EvaluateReadStatement(const string &a_statement)
 
 }
 
+
+/**/
+/*
+DuckInterpreter::EvaluateArithmentStatment()
+NAME
+		DuckInterpreter::EvaluateArithmentStatment - finds value of an arithmetic expression and assigns it to a variable
+SYNOPSIS
+		void DuckInterpreter::EvaluateArithmentStatment(const string &a_statement);
+			a_statement             --> the statement to execute the arithmetic statement
+DESCRIPTION
+		takes a statement and parses through it to find the variable to place the final results in and takes the position of 
+		next statement after the assignment operator and passes it to evaluateArithmeticExpression to find the value and assign it to
+		a variable in the symbol table map.
+RETURNS
+		void
+AUTHOR
+		Prabal Chhatkuli
+DATE
+		11:45pm 5/6/2019
+*/
+/**/
 // we know at this point that we have an arithementic expression.  Excute this statement.  Any error
 // will perminate the program.
 void DuckInterpreter::EvaluateArithmentStatment(const string &a_statement)
@@ -395,8 +596,30 @@ void DuckInterpreter::EvaluateArithmentStatment(const string &a_statement)
 	// Record the result.
 	m_symbolTable.RecordVariableValue(resultVariable, result);
 
-}
-// Evaluates an if statement to determine if the goto should be executed.
+}/*void DuckInterpreter::EvaluateArithmentStatment(const string &a_statement);*/
+
+/**/
+/*
+DuckInterpreter::EvaluateIfStatement()
+NAME
+		DuckInterpreter::EvaluateIfStatement - Evaluates an if statement to determine if the goto should be executed.
+SYNOPSIS
+		int DuckInterpreter::EvaluateIfStatement(string a_statement, int a_nextStatement);
+			a_statement             --> contains an expression of type integer
+			a_nextStatement             -->contains integer value of next instruction to be executed
+DESCRIPTION
+		parses through a_statement and determines the arithmetic value of the string of arithmetic expressions after
+		"if" word, Also, finds the goto statement following the if clause by searching the string, and replaces goto statement by ";"
+		Then finds the label location of the goto label
+RETURNS
+		integer value of the next statement to be executed, it will be the next_statement if the "if" clause
+		evaluates as 0, otherwise it will return the label location of the goto label.
+AUTHOR
+		Prabal Chhatkuli
+DATE
+		1:15am 4/29/2019
+*/
+/**/
 int DuckInterpreter::EvaluateIfStatement(string a_statement, int a_nextStatement)
 {
 	// Get past of the "if" in the if statement.
@@ -457,8 +680,28 @@ int DuckInterpreter::EvaluateIfStatement(string a_statement, int a_nextStatement
 		return a_nextStatement + 1;
 	}
 	return labelLocation;
-}
+}/*int DuckInterpreter::EvaluateIfStatement(string a_statement, int a_nextStatement);*/
 
+
+/**/
+/*
+DuckInterpreter::EvaluatePrintStatement()
+NAME
+		DuckInterpreter::EvaluatePrintStatement - finds the specific string to print on to the screen
+SYNOPSIS
+		void DuckInterpreter::EvaluatePrintStatement(string a_statement);
+			a_statement             --> contains an expression of type print
+DESCRIPTION
+		parses through the statement to find strings between the double quotes and finds the value of variables using the
+		symbol table to display, which is determines by parsing words after commas
+RETURNS
+		void
+AUTHOR
+		Prabal Chhatkuli
+DATE
+		9:45pm 5/5/2019
+*/
+/**/
 void DuckInterpreter::EvaluatePrintStatement(string a_statement)
 {
 	int nextPos = 0;
@@ -571,4 +814,4 @@ void DuckInterpreter::EvaluatePrintStatement(string a_statement)
 		}
 	}//end of while
 	cout << endl;
-}//end of function
+}/*void DuckInterpreter::EvaluatePrintStatement(string a_statement)*/
