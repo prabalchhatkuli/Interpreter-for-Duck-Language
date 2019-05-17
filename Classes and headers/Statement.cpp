@@ -41,7 +41,7 @@ string Statement::GetStatement(int a_statementNum)
 Statement::GetLabelLocation()
 
 NAME
-		Statement::GetLabelLocation - get the statement of a specific number in the record
+		Statement::GetLabelLocation - get the statement number of a specific label in the record
 SYNOPSIS
 		int Statement::GetLabelLocation(string a_string);
 			a_string             --> the label whose value needs to be found
@@ -206,15 +206,4 @@ void Statement::RecordStatements(string a_sourceFileName)//passing to the functi
 		}
 		counter++;
 	}
-	//checking by printing
-	for (vector<string>::iterator it = m_statements.begin(); it != m_statements.end(); ++it)
-	{
-		cout << (*it) << endl;
-	}
-	cout << "-------------------------------------------------------------------------------------------------------------" << endl;
-	for (map<string, int>::iterator it = m_labelToStatement.begin(); it != m_labelToStatement.end(); ++it)
-	{
-		cout << (*it).first << "\t" <<(*it).second<<endl;
-	}
-	
 }/*void Statement::RecordStatements(string a_sourceFileName);*/

@@ -1,3 +1,39 @@
+/**/
+/*
+DuckInterpreter.h
+
+NAME:	DuckInterpreter -	This class will manage statements of the instructions inserted.
+					it will record statements and labels in those statements as well.
+
+SYNOPSIS:	class DuckInterpreter{};
+				Member Variables:
+					Private:
+							m_statements      -> The statement object that holds the recorded statements
+							m_symbolTable    -> The sysmbol table object that holds all the variable names and their values
+							m_operatorStack    -> Stacks for the operators, used in evaluating statements
+							m_numberStack    -> Stacks for the operators, used in evaluating statements
+				Member Functions:
+					Public:
+							RecordStatements()    -> Records the statement that are in the specified file
+							RunInterpreter()    ->
+					Private:
+							GetStatementStype()    -> Determines the type of the next statement
+							ExecuteStatement()    -> Executes the statement from a specified location.  Returns the location of the next statement to be executed.
+							ParseNextElement()    -> Returns the next element in the statement.  Returns the next location to be accessed.
+							FindPrecedence()    -> Returns the precedence of an operator
+							findValue()    -> performs arithmetic operation
+							EvaluateArithmentStatment()    -> finds value of an arithmetic expression and assigns it to a variable
+							EvaluateArithmenticExpression()    -> Evaluate an arithmetic statement
+							EvaluateIfStatement()    -> Evaluates an if statement to determine if the goto should be executed.
+							EvaluatePrintStatement()    -> finds the specific string to print on to the screen
+							EvaluateReadStatement()    -> evaluates a statement of read type
+							EvaluateGotoStatement()    -> finds the location of the label of a goto statement
+AUTHOR:
+			Prabal Chhatkuli
+DATE:
+			04/2019-05/2019
+*/
+/**/
 #pragma once
 #include "Statement.h"
 #include "SymbolTable.h"
